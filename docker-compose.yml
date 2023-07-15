@@ -6,23 +6,23 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - '3000:3000'
+      - 3000:3000
     depends_on:
-      - postgres
+      - mongodb
     env_file:
       - .env
 
-  postgres:
-    image: postgres:13
-    container_name: postgres
+  mongodb:
+    build: ./docker
+    container_name: read-file
     restart: always
     ports:
-      - '5432:5432'
+      - 27018:27018
     env_file:
       - .env
     volumes:
-      - postgres:/var/lib/postgresql/data
+      - mongodb:/data/db
 
 volumes:
-  postgres:
+  mongodb:
     name: nest-db

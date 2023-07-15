@@ -1,16 +1,17 @@
 version: '3.8'
 services:
-  postgres:
-    image: postgres:13
-    container_name: postgres
+  mongodb:
+    image: mongo:4
+    command: --replSet rs0
+    container_name: read-file
     restart: always
     ports:
-      - '5432:5432'
+      - 27017:27017
     env_file:
       - .env
     volumes:
-      - postgres:/var/lib/postgresql/data
-
+      - ./mongo-entrypoint:/docker-entrypoint-initdb.d
+      - mongodb:/data/db
 volumes:
-  postgres:
+  mongodb:
     name: nest-db
