@@ -15,7 +15,7 @@ export class ReadFileModule {
   constructor(private prisma: PrismaService) {}
   async onApplicationBootstrap() {
     if (process.env.NODE_ENV !== 'production') {
-      const folderPath = join(process.cwd(), './Read-here');
+      const folderPath = join(process.cwd(), './read-here');
 
       // Đọc nội dung của các tệp tin .txt lần đầu tiên
       await this.readFileContents(folderPath);
