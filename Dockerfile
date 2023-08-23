@@ -9,7 +9,6 @@ COPY prisma ./prisma/
 
 # Install app dependencies
 RUN npm install
-
 COPY . .
 
 RUN npm run build
@@ -23,4 +22,5 @@ COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/dist ./dist
 
 EXPOSE 3000
+CMD ["npx", "prisma", "db", "push"]
 CMD [ "npm", "run", "start:prod" ]
