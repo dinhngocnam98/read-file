@@ -3,8 +3,9 @@ import { ReadFileService } from './read-file.service';
 import { ReadFileController } from './read-file.controller';
 import { join } from 'path';
 import * as fs from 'fs-extra';
-import * as chokidar from 'chokidar';
+import * as iconv from 'iconv-lite';
 import * as process from 'process';
+import * as chokidar from 'chokidar';
 import { PrismaService } from 'nestjs-prisma';
 
 @Module({
@@ -21,19 +22,11 @@ export class ReadFileModule {
       await this.readFileContents(folderPath);
 
       // Theo dõi sự thay đổi trong thư mục và cập nhật nội dung của các tệp tin .txt
-      // chokidar.watch(folderPath).on('all', async (event, path) => {
-      //   if (
-      //     event === 'add' &&
-      //     path.endsWith('.txt') &&
-      //     !path.includes('saved')
-      //   ) {
-      //     const contents = fs.readFileSync(path, 'utf-8');
-      //     console.log(path)
-      //     // await this.saveDatabase(contents, path);
-      //     // const newPath = path.replace('.txt', '_saved.txt');
-      //     // fs.rename(path, newPath);
-      //   }
-      // });
+      chokidar.watch(folderPath).on('all', async (event, path) => {
+        if (event === 'addDir') {
+          await this.readFileContents(path);
+        }
+      });
     }
   }
 
@@ -42,8 +35,9 @@ export class ReadFileModule {
     const shortcuts = this.readShortcuts(folderPath);
     if (shortcuts.length > 0) {
       for (const file of shortcuts) {
-        if (file.endsWith('.txt') && !file.includes('saved')) {
-          await this.readTXT(folderPath, file);
+        if (file.toUpperCase().endsWith('.TXT')) {
+          if (!file.toUpperCase().includes('SAVED'))
+            await this.readTXT(folderPath, file);
         } else {
           const newFolderPath = folderPath + '/' + file;
           await this.readFileContents(newFolderPath);
@@ -58,62 +52,43 @@ export class ReadFileModule {
   }
   private async readTXT(folderPath: string, file: string) {
     const filePath = `${folderPath}/${file}`;
-    console.log(filePath);
     const contents = await this.extractSignalData(filePath);
-
-    console.log(contents);
-
-    // const content: string = fs.readFileSync(filePath, 'utf-8');
-    // await this.saveDatabase(content, file);
-    // console.log(content);
-    // const newFile = file.replace('.txt', '_saved.txt');
-    // fs.rename(`${folderPath}/${file}`, `${folderPath}/${newFile}`);
+    await this.saveDatabase(contents, folderPath);
+    const newFile = file
+      .toLowerCase()
+      .replace('.txt', '_saved.txt')
+      .toUpperCase();
+    fs.rename(`${folderPath}/${file}`, `${folderPath}/${newFile}`);
   }
 
   // Lưu dữ liệu vào database
-  private async saveDatabase(content: string, file: string) {
-    const contents = content.split('\n');
-    console.log(content);
-    contents.map(async (content, index) => {
-      const name = contents[0].replace('\r', '');
-      // if (index > 2 && content !== '') {
-      //   const record = content.replace('\r', '').split('\t');
-      //   await this.prisma.record.create({
-      //     data: {
-      //       name: name,
-      //       fileName: file,
-      //       action: record[0] ? record[0] : null,
-      //       sampleId: record[1] ? record[1] : null,
-      //       trueValue: record[2] ? parseFloat(record[2]) : null,
-      //       Conc: record[3] ? parseFloat(record[3]) : null,
-      //       Abs: record[4] ? parseFloat(record[4]) : null,
-      //       SG: record[5] ? parseFloat(record[5]) : null,
-      //       date:
-      //         record[6] && record[7]
-      //           ? new Date(record[6] + ' ' + record[7])
-      //           : null,
-      //     },
-      //   });
-      // }
+  private async saveDatabase(contents: any[], folderPath: string) {
+    const signalData1 = [];
+    const signalData2 = [];
+    for (const content of contents) {
+      if (content.name_signal.includes('Signal 1')) {
+        signalData1.push(content);
+      } else signalData2.push(content);
+    }
+    await this.prisma.report.create({
+      data: {
+        folderDir: folderPath,
+        signal1: signalData1,
+        signal2: signalData2,
+      },
     });
   }
 
   async extractSignalData(filePath: string): Promise<any[]> {
     try {
-      const fileContent = await fs.promises.readFile(filePath, 'utf-8');
+      const fileBuffer = await fs.readFile(filePath);
 
-      const signal1Matches = fileContent.match(
-        /Signal 1:(.*?)Totals\s*:\s*([\d.]+)/s
-      );
-      const signal2Matches = fileContent.match(
-        /Signal 2:(.*?)Totals\s*:\s*([\d.]+)/s
-      );
-
-      if (signal1Matches && signal2Matches) {
-        const signal1Data = this.extractSignal1Data(signal1Matches[1].trim());
-        const signal2Data = this.extractSignal2Data(signal2Matches[1].trim());
-
-        return [...signal1Data, ...signal2Data];
+      // Convert the file buffer from UTF-16 LE with BOM to UTF-8
+      const fileContent = iconv.decode(fileBuffer, 'utf16-le');
+      // Extract "Signal" sections
+      const signalSections = fileContent.match(/Signal \d+:.+?(Totals :.+?)/gs);
+      if (signalSections) {
+        return this.parseSignalSections(signalSections);
       } else {
         throw new Error('Signal data not found in the provided text.');
       }
@@ -122,24 +97,57 @@ export class ReadFileModule {
     }
   }
 
-  private extractSignal1Data(signalData: string): any[] {
-    return this.extractDataFromSignalSection(signalData);
-  }
+  private parseSignalSections(signalSections: string[]): object[] {
+    const parsedData = [];
 
-  private extractSignal2Data(signalData: string): any[] {
-    return this.extractDataFromSignalSection(signalData);
-  }
-
-  private extractDataFromSignalSection(signalData: string): any[] {
-    const lines = signalData.split('\n');
-    const data = [];
-
-    for (const line of lines) {
-      const [retTime, type, area, amtArea, norm, grp, name] = line
+    for (const signal of signalSections) {
+      const lines = signal
         .trim()
-        .split(/\s+/);
-      data.push({ retTime, type, area, amtArea, norm, grp, name });
+        .split('\n')
+        .map((line) => line.trim());
+
+      // Extract name_signal
+      const nameSignalMatch = lines[0];
+      const name_signal = nameSignalMatch ? nameSignalMatch : '';
+
+      // Extract dataRows
+      const dataRows = lines.slice(4, -1);
+      const signalEntries = dataRows.slice(1).map((row) => {
+        const rowSplit = row.split(/\s+/).map((value) => value.trim());
+        if (rowSplit.length === 6) {
+          const [RetTime, type, Area, Amt_Area, Norm, Name] = rowSplit;
+          return {
+            name_signal,
+            RetTime: parseFloat(RetTime) || null,
+            type,
+            Area: parseFloat(Area) || null,
+            Amt_Area: parseFloat(Amt_Area) || null,
+            Norm: parseFloat(Norm) || null,
+            Grp: '',
+            Name,
+          };
+        } else {
+          const [RetTime, Area, Amt_Area, Norm, Name] = rowSplit;
+          return {
+            name_signal,
+            RetTime: parseFloat(RetTime) || null,
+            type: null,
+            Area: parseFloat(Area) || null,
+            Amt_Area: parseFloat(Amt_Area) || null,
+            Norm: parseFloat(Norm) || null,
+            Grp: '',
+            Name,
+          };
+        }
+      });
+
+      // const totals_norm = lines[lines.length - 1].match(/Totals\s+:\s+(\S+)/);
+      // console.log(totals_norm);
+      // signalEntries.push({ totals_norm: parseFloat(totals_norm) || 0 });
+
+      parsedData.push(...signalEntries);
     }
-    return data;
+
+    return parsedData;
   }
 }

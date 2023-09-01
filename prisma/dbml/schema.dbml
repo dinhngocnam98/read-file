@@ -16,3 +16,12 @@ Table record {
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
 }
+
+Table report {
+  id String [pk]
+  folderDir String [not null]
+  signal1 Json[] [not null]
+  signal2 Json[] [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}

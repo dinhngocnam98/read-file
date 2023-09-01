@@ -26,3 +26,12 @@ model record {
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
 }
+
+model report {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  folderDir String   @map("folder_dir")
+  signal1   Json[]   @map("signal_1")
+  signal2   Json[]   @map("signal_2")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+}
