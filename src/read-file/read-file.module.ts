@@ -16,7 +16,8 @@ export class ReadFileModule {
   constructor(private prisma: PrismaService) {}
   async onApplicationBootstrap() {
     if (process.env.NODE_ENV !== 'production') {
-      const folderPath = join(process.cwd(), './local_txt');
+      // const folderPath = join(process.cwd(), './local_txt');
+      const folderPath = 'Y:';
 
       // Đọc nội dung của các tệp tin .txt lần đầu tiên
       await this.readFileContents(folderPath);
@@ -33,9 +34,9 @@ export class ReadFileModule {
   // đọc nội dung file txt
   private async readFileContents(folderPath: string) {
     const shortcuts = await this.readShortcuts(folderPath);
-    if (shortcuts.length > 0) {
+    if (shortcuts && shortcuts.length > 0) {
       for (const file of shortcuts) {
-        if (file.toUpperCase().endsWith('.TXT')) {
+        if (file.toUpperCase().endsWith('.TXT') && file.toUpperCase().includes('REPORT') && !file.toUpperCase().includes('IRREPORT')) {
           if (!file.toUpperCase().includes('SAVED'))
             await this.readTXT(folderPath, file);
         } else {
@@ -85,7 +86,6 @@ export class ReadFileModule {
   async extractSignalData(filePath: string): Promise<any[]> {
     try {
       const fileBuffer = await fs.readFile(filePath);
-
       // Convert the file buffer from UTF-16 LE with BOM to UTF-8
       const fileContent = iconv.decode(fileBuffer, 'utf16-le');
       // Extract "Signal" sections
