@@ -32,7 +32,7 @@ export class ReadFileModule {
 
   // đọc nội dung file txt
   private async readFileContents(folderPath: string) {
-    const shortcuts = this.readShortcuts(folderPath);
+    const shortcuts = await this.readShortcuts(folderPath);
     if (shortcuts.length > 0) {
       for (const file of shortcuts) {
         if (file.toUpperCase().endsWith('.TXT')) {
@@ -46,9 +46,12 @@ export class ReadFileModule {
     }
   }
 
-  private readShortcuts(dir: any) {
-    const shortcuts = fs.readdirSync(dir);
-    return shortcuts.filter((file: string) => file !== '.DS_Store');
+  private async readShortcuts(dir: any) {
+    const stats = await fs.promises.stat(dir);
+    if (stats.isDirectory()) {
+      const shortcuts = fs.readdirSync(dir);
+      return shortcuts.filter((file: string) => file !== '.DS_Store');
+    }
   }
   private async readTXT(folderPath: string, file: string) {
     const filePath = `${folderPath}/${file}`;
