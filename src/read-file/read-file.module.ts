@@ -36,7 +36,11 @@ export class ReadFileModule {
     const shortcuts = await this.readShortcuts(folderPath);
     if (shortcuts && shortcuts.length > 0) {
       for (const file of shortcuts) {
-        if (file.toUpperCase().endsWith('.TXT') && file.toUpperCase().includes('REPORT') && !file.toUpperCase().includes('IRREPORT')) {
+        if (
+          file.toUpperCase().endsWith('.TXT') &&
+          file.toUpperCase().includes('REPORT') &&
+          !file.toUpperCase().includes('IRREPORT')
+        ) {
           if (!file.toUpperCase().includes('SAVED'))
             await this.readTXT(folderPath, file);
         } else {
