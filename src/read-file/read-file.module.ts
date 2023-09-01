@@ -16,7 +16,8 @@ export class ReadFileModule {
   constructor(private prisma: PrismaService) {}
   async onApplicationBootstrap() {
     if (process.env.NODE_ENV !== 'production') {
-      const folderPath = join(process.cwd(), './local_txt');
+      // const folderPath = join(process.cwd(), './local_txt');
+      const folderPath = 'Y:';
 
       // Đọc nội dung của các tệp tin .txt lần đầu tiên
       await this.readFileContents(folderPath);
@@ -35,7 +36,10 @@ export class ReadFileModule {
     const shortcuts = this.readShortcuts(folderPath);
     if (shortcuts.length > 0) {
       for (const file of shortcuts) {
-        if (file.toUpperCase().endsWith('.TXT')) {
+        if (
+          file.toUpperCase().endsWith('.TXT') &&
+          file.toUpperCase().includes('REPORT')
+        ) {
           if (!file.toUpperCase().includes('SAVED'))
             await this.readTXT(folderPath, file);
         } else {
