@@ -15,7 +15,7 @@ export class AppService {
           file.toUpperCase().includes('REPORT') &&
           !file.toUpperCase().includes('IRREPORT')
         ) {
-          if (!file.toUpperCase().includes('SAVED'))
+          if (file.toUpperCase().includes('SAVED'))
             await this.readTXT(folderPath, file);
         } else {
           const newFolderPath = folderPath + '/' + file;
@@ -37,7 +37,6 @@ export class AppService {
     const contents = await this.extractSignalData(filePath);
     await this.saveDatabase(contents, folderPath);
     const newFile = file
-      .toLowerCase()
       .replace('.txt', '_saved.txt')
       .toUpperCase();
     fs.rename(`${folderPath}/${file}`, `${folderPath}/${newFile}`);
@@ -52,13 +51,34 @@ export class AppService {
         signalData1.push(content);
       } else signalData2.push(content);
     }
-    await this.prisma.reports.create({
-      data: {
-        folderDir: folderPath,
-        signal1: signalData1,
-        signal2: signalData2,
-      },
-    });
+    if(folderPath.includes('D:/')){
+      await this.prisma.gc5_reports.create({
+        data:{
+          folderDir: folderPath,
+          signal1: signalData1,
+          signal2: signalData2
+        }
+      })
+    }
+    else if(folderPath.includes('Y:/')){
+      await this.prisma.gc4_reports.create({
+        data:{
+          folderDir: folderPath,
+          signal1: signalData1,
+          signal2: signalData2
+        }
+      })
+    }
+    else if(folderPath.includes('X/')){
+      await this.prisma.gc2_reports.create({
+        data:{
+          folderDir: folderPath,
+          signal1: signalData1,
+          signal2: signalData2
+        }
+      })
+    }
+    
   }
 
   async extractSignalData(filePath: string): Promise<any[]> {

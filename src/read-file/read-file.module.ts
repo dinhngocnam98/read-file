@@ -21,7 +21,7 @@ export class ReadFileModule {
       //   join(process.cwd(), './local_txt'),
       //   join(process.cwd(), './local_txt1'),
       // ];
-      const folderPaths = ['D:/DAM CA MAU/DATA', 'Y:/', 'X:/'];
+      const folderPaths = ['D:/DAM CA MAU/DATA', 'Y:', 'X:'];
       for (const folderPath of folderPaths) {
         await this.appService.readFileContents(folderPath);
       }
@@ -34,7 +34,7 @@ export class ReadFileModule {
           ignoreInitial: true,
         })
         .on('all', async (event, path) => {
-          if (event === 'addDir' || event === 'change') {
+          if (event === 'addDir') {
             console.log(event + path);
             await this.appService.readFileContents(path);
           }
