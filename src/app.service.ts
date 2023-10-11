@@ -15,7 +15,7 @@ export class AppService {
           file.toUpperCase().includes('REPORT') &&
           !file.toUpperCase().includes('IRREPORT')
         ) {
-          if (file.toUpperCase().includes('SAVED'))
+          if (!file.toUpperCase().includes('SAVED'))
             await this.readTXT(folderPath, file);
         } else {
           const newFolderPath = folderPath + '/' + file;
