@@ -12,7 +12,7 @@ generator dbml {
   provider = "prisma-dbml-generator"
 }
 
-model record {
+model records {
   id        String    @id @default(auto()) @map("_id") @db.ObjectId
   name      String
   fileName  String    @map("file_name")
@@ -27,7 +27,7 @@ model record {
   updatedAt DateTime  @updatedAt @map("updated_at")
 }
 
-model report {
+model reports {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   folderDir String   @map("folder_dir")
   signal1   Json[]   @map("signal_1")

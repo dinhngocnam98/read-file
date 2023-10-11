@@ -2,7 +2,7 @@
 //// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 //// ------------------------------------------------------
 
-Table record {
+Table records {
   id String [pk]
   name String [not null]
   fileName String [not null]
@@ -17,7 +17,7 @@ Table record {
   updatedAt DateTime [not null]
 }
 
-Table report {
+Table reports {
   id String [pk]
   folderDir String [not null]
   signal1 Json[] [not null]

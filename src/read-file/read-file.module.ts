@@ -17,7 +17,7 @@ export class ReadFileModule {
   async onApplicationBootstrap() {
     if (process.env.NODE_ENV !== 'production') {
       // const folderPath = join(process.cwd(), './local_txt');
-      const folderPath = 'Y:';
+      const folderPath = 'D:/DAM CA MAU/DATA';
 
       // Đọc nội dung của các tệp tin .txt lần đầu tiên
       await this.readFileContents(folderPath);
