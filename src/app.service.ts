@@ -37,6 +37,7 @@ export class AppService {
     const contents = await this.extractSignalData(filePath);
     await this.saveDatabase(contents, folderPath);
     const newFile = file
+      .toLowerCase()
       .replace('.txt', '_saved.txt')
       .toUpperCase();
     fs.rename(`${folderPath}/${file}`, `${folderPath}/${newFile}`);
@@ -69,7 +70,7 @@ export class AppService {
         }
       })
     }
-    else if(folderPath.includes('X/')){
+    else if(folderPath.includes('X:/')){
       await this.prisma.gc2_reports.create({
         data:{
           folderDir: folderPath,
