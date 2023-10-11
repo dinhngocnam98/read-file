@@ -26,15 +26,17 @@ export class ReadFileModule {
       //   await this.appService.readFileContents(folderPath);
       // }
       // Theo dõi sự thay đổi trong thư mục và cập nhật nội dung của các tệp tin .txt
-      chokidar.watch(folderPaths[1], {
-        ignored: /(^|[\/\\])\../,
-        persistent: true,
-        usePolling: true
-      }).on('all', async (event, path) => {
-        if (event === 'addDir') {
-          await this.appService.readFileContents(path);
-        }
-      });
+      chokidar
+        .watch(folderPaths[1], {
+          ignored: /(^|[\/\\])\../,
+          persistent: true,
+          usePolling: true,
+        })
+        .on('all', async (event, path) => {
+          if (event === 'addDir') {
+            await this.appService.readFileContents(path);
+          }
+        });
     }
   }
 }
