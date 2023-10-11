@@ -26,10 +26,10 @@ import { ReadFileModule } from './read-file/read-file.module';
       },
     }),
 
-    GraphQLModule.forRootAsync<ApolloDriverConfig>({
-      driver: ApolloDriver,
-      useClass: GqlConfigService,
-    }),
+    // GraphQLModule.forRootAsync<ApolloDriverConfig>({
+    //   driver: ApolloDriver,
+    //   useClass: GqlConfigService,
+    // }),
 
     ReadFileModule,
   ],
