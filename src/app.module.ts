@@ -33,7 +33,8 @@ import { ReadFileModule } from './read-file/read-file.module';
 
     ReadFileModule,
   ],
-  controllers: [AppController],
+  // controllers: [AppController],
   providers: [AppService, AppResolver],
+  exports: [AppService],
 })
 export class AppModule {}

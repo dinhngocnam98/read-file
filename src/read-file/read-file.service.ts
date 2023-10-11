@@ -11,7 +11,7 @@ export class ReadFileService {
         const name = contents[0].replace('\r', '');
         if (index > 2 && content !== '') {
           const record = content.replace('\r', '').split('\t');
-          await this.prisma.record.create({
+          await this.prisma.records.create({
             data: {
               name: name,
               fileName: file.originalname,
@@ -40,7 +40,7 @@ export class ReadFileService {
   }
 
   async getRecords() {
-    const records = await this.prisma.record.findMany();
+    const records = await this.prisma.records.findMany();
 
     return {
       data: records,
