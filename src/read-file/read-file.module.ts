@@ -21,17 +21,19 @@ export class ReadFileModule {
       //   join(process.cwd(), './local_txt'),
       //   join(process.cwd(), './local_txt1'),
       // ];
-      const folderPaths = ['D:/DAM CA MAU/DATA', 'Y:/'];
-      // for (const folderPath of folderPaths) {
-      //   await this.appService.readFileContents(folderPath);
-      // }
+      const folderPaths = ['D:/DAM CA MAU/DATA', 'Y:/', 'X:/'];
+      for (const folderPath of folderPaths) {
+        await this.appService.readFileContents(folderPath);
+      }
       // Theo dõi sự thay đổi trong thư mục và cập nhật nội dung của các tệp tin .txt
-      chokidar.watch(folderPaths[1], {
+      chokidar.watch(folderPaths, {
         ignored: /(^|[\/\\])\../,
         persistent: true,
-        usePolling: true
+        usePolling: true,
+        ignoreInitial: true
       }).on('all', async (event, path) => {
-        if (event === 'addDir') {
+        if (event === 'addDir' || event === 'change') {
+          console.log(event + path)
           await this.appService.readFileContents(path);
         }
       });
