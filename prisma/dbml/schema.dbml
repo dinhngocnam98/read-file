@@ -26,6 +26,15 @@ Table gc2_reports {
   updatedAt DateTime [not null]
 }
 
+Table gc3_reports {
+  id String [pk]
+  folderDir String [not null]
+  signal1 Json[] [not null]
+  signal2 Json[] [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
 Table gc4_reports {
   id String [pk]
   folderDir String [not null]
@@ -36,6 +45,33 @@ Table gc4_reports {
 }
 
 Table gc5_reports {
+  id String [pk]
+  folderDir String [not null]
+  signal1 Json[] [not null]
+  signal2 Json[] [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table hplc_reports {
+  id String [pk]
+  folderDir String [not null]
+  signal1 Json[] [not null]
+  signal2 Json[] [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table uv1800_reports {
+  id String [pk]
+  folderDir String [not null]
+  signal1 Json[] [not null]
+  signal2 Json[] [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table uv2600_reports {
   id String [pk]
   folderDir String [not null]
   signal1 Json[] [not null]

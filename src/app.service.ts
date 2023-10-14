@@ -6,6 +6,9 @@ import { PrismaService } from 'nestjs-prisma';
 @Injectable()
 export class AppService {
   constructor(private prisma: PrismaService) {}
+
+  errorDir: string[] = [];
+
   async readFileContents(folderPath: string) {
     const shortcuts = await this.readShortcuts(folderPath);
     if (shortcuts && shortcuts.length > 0) {
@@ -26,10 +29,22 @@ export class AppService {
   }
 
   private async readShortcuts(dir: any) {
-    const stats = await fs.promises.stat(dir);
-    if (stats.isDirectory()) {
-      const shortcuts = fs.readdirSync(dir);
-      return shortcuts.filter((file: string) => file !== '.DS_Store');
+    try {
+      const stats = await fs.promises.stat(dir);
+      if (stats.isDirectory()) {
+        const indexErrorDir = this.errorDir.indexOf(dir);
+        if (indexErrorDir !== -1) {
+          this.errorDir.splice(indexErrorDir, 1);
+        }
+        const shortcuts = fs.readdirSync(dir);
+        return shortcuts.filter((file: string) => file !== '.DS_Store');
+      }
+    } catch (err) {
+      const indexErrorDir = this.errorDir.indexOf(dir);
+      if (indexErrorDir === -1) {
+        this.errorDir.push(dir);
+      }
+      console.error(`Error reading directory stats: ${dir}`);
     }
   }
   private async readTXT(folderPath: string, file: string) {
@@ -52,36 +67,49 @@ export class AppService {
         signalData1.push(content);
       } else signalData2.push(content);
     }
-    if(folderPath.includes('D:/')){
-      await this.prisma.gc5_reports.create({
-        data:{
-          folderDir: folderPath,
-          signal1: signalData1,
-          signal2: signalData2
-        }
-      })
+    const data = {
+      folderDir: folderPath,
+      signal1: signalData1,
+      signal2: signalData2,
+    };
+    switch (true) {
+      case folderPath.includes('D:'):
+        await this.prisma.gc5_reports.create({
+          data: data,
+        });
+        break;
+      case folderPath.includes('Y:'):
+        await this.prisma.gc4_reports.create({
+          data: data,
+        });
+        break;
+      case folderPath.includes('U:'):
+        await this.prisma.gc3_reports.create({
+          data: data,
+        });
+        break;
+      case folderPath.includes('X:'):
+        await this.prisma.gc2_reports.create({
+          data: data,
+        });
+        break;
+      case folderPath.includes('S:'):
+        await this.prisma.uv1800_reports.create({
+          data: data,
+        });
+        break;
+      case folderPath.includes('T:'):
+        await this.prisma.uv2600_reports.create({
+          data: data,
+        });
+        break;
+      default:
+        console.log('Invalid folder for database');
+        break;
     }
-    else if(folderPath.includes('Y:/')){
-      await this.prisma.gc4_reports.create({
-        data:{
-          folderDir: folderPath,
-          signal1: signalData1,
-          signal2: signalData2
-        }
-      })
-    }
-    else if(folderPath.includes('X:/')){
-      await this.prisma.gc2_reports.create({
-        data:{
-          folderDir: folderPath,
-          signal1: signalData1,
-          signal2: signalData2
-        }
-      })
-    }
-    
   }
 
+  //Loc du lieu
   async extractSignalData(filePath: string): Promise<any[]> {
     try {
       const fileBuffer = await fs.readFile(filePath);

@@ -36,6 +36,15 @@ model gc2_reports {
   updatedAt DateTime @updatedAt @map("updated_at")
 }
 
+model gc3_reports {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  folderDir String   @map("folder_dir")
+  signal1   Json[]   @map("signal_1")
+  signal2   Json[]   @map("signal_2")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+}
+
 model gc4_reports {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   folderDir String   @map("folder_dir")
@@ -46,6 +55,33 @@ model gc4_reports {
 }
 
 model gc5_reports {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  folderDir String   @map("folder_dir")
+  signal1   Json[]   @map("signal_1")
+  signal2   Json[]   @map("signal_2")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+}
+
+model hplc_reports {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  folderDir String   @map("folder_dir")
+  signal1   Json[]   @map("signal_1")
+  signal2   Json[]   @map("signal_2")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+}
+
+model uv1800_reports {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  folderDir String   @map("folder_dir")
+  signal1   Json[]   @map("signal_1")
+  signal2   Json[]   @map("signal_2")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+}
+
+model uv2600_reports {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   folderDir String   @map("folder_dir")
   signal1   Json[]   @map("signal_1")
