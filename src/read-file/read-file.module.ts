@@ -20,7 +20,9 @@ export class ReadFileModule {
     //   join(process.cwd(), './local_txt'),
     //   join(process.cwd(), './local_txt1'),
     // ];
-    const folderPaths = ['D:/DAM CA MAU/DATA','Y:','U:','X:','S:', 'T:'];
+    // const folderPaths = ['D:/DAM CA MAU/DATA','Y:','U:','X:','S:', 'T:'];
+    const folderPaths = ['X:'];
+
 
     const promises = [];
     folderPaths.forEach((folderPath) => {
@@ -61,7 +63,6 @@ export class ReadFileModule {
     const errorFolderWatchers = [];
     const watcherChokidar = (folderPath: string) => {
       const watcher = chokidar.watch(folderPath, {
-        ignored: /(^|[\/\\])\../,
         persistent: true,
         usePolling: true,
         ignoreInitial: true,
@@ -89,7 +90,9 @@ export class ReadFileModule {
 
     watchers.forEach((watcher) => {
       watcher.on('addDir', async (path: string) => {
-        await this.appService.readFileContents(path);
+        const pathEdit = path.replace(/\\/g, "/").replace(":", ":/");
+        console.log(pathEdit);
+        await this.appService.readFileContents(pathEdit);
       });
     });
   }
