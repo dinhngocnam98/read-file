@@ -91,7 +91,6 @@ export class ReadFileModule {
     watchers.forEach((watcher) => {
       watcher.on('addDir', async (path: string) => {
         const pathEdit = path.replace(/\\/g, "/").replace(":", ":/");
-        console.log(pathEdit);
         await this.appService.readFileContents(pathEdit);
       });
     });
