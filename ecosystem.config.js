@@ -3,7 +3,7 @@ module.exports = {
     {
       name: 'read-file-app',
       script: 'dist/main.js',
-      instances: 1,
+      instances: 'auto',
       exec_mode: 'cluster',
       watch: true,
       merge_logs: true,
