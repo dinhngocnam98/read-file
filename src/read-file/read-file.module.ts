@@ -21,9 +21,17 @@ export class ReadFileModule {
     //   join(process.cwd(), './local_txt1'),
     // ];
 
-    // const folderPaths = ['D:/DAM CA MAU/DATA', 'Y:', 'U:', 'X:', 'S:', 'T:', 'R:', 'W:'];
-        const folderPaths = ['V:/Test'];
-
+    const folderPaths = [
+      'D:/DAM CA MAU/DATA',
+      'Y:',
+      'U:',
+      'X:',
+      'S:',
+      'T:',
+      'R:',
+      'W:',
+      'V:',
+    ];
 
     const promises = [];
     folderPaths.forEach((folderPath) => {
@@ -35,7 +43,7 @@ export class ReadFileModule {
       .catch((error) => console.error(error));
 
     // //Doc lai file loi
-    const intervalInMilliseconds = 5 * 60 * 1000;
+    const intervalInMilliseconds = 10 * 1000;
     setInterval(async () => {
       const promisesErrorDir = [];
       if (errorFolderWatchers.length > 0) {
