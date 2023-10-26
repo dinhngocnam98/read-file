@@ -23,6 +23,7 @@ export class ReadFileModule {
 
     const folderPaths = [
       'D:/DAM CA MAU/DATA',
+      'V:/HPLC',
       'Y:',
       'U:',
       'X:',
@@ -30,7 +31,6 @@ export class ReadFileModule {
       'T:',
       'R:',
       'W:',
-      'V:',
     ];
 
     const promises = [];
@@ -43,7 +43,7 @@ export class ReadFileModule {
       .catch((error) => console.error(error));
 
     // //Doc lai file loi
-    const intervalInMilliseconds = 5 * 60 * 1000;
+    const intervalInMilliseconds = 10 * 60 * 1000;
     setInterval(async () => {
       const promisesErrorDir = [];
 
@@ -59,9 +59,9 @@ export class ReadFileModule {
           const promise = this.appService.readFileContents(folderPath);
           promisesErrorDir.push(promise);
         });
-        await Promise.all(promisesErrorDir)
-          .then(() => console.log('Error shortcuts had read!'))
-          .catch((error) => console.error(error));
+        await Promise.all(promisesErrorDir).catch((error) =>
+          console.error(error)
+        );
       }
     }, intervalInMilliseconds);
 
