@@ -27,6 +27,15 @@ model records {
   updatedAt DateTime  @updatedAt @map("updated_at")
 }
 
+model gc1_reports {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  folderDir String   @map("folder_dir")
+  signal1   Json[]   @map("signal_1")
+  signal2   Json[]   @map("signal_2")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+}
+
 model gc2_reports {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   folderDir String   @map("folder_dir")
@@ -82,6 +91,15 @@ model uv1800_reports {
 }
 
 model uv2600_reports {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  folderDir String   @map("folder_dir")
+  signal1   Json[]   @map("signal_1")
+  signal2   Json[]   @map("signal_2")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+}
+
+model aas_reports {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   folderDir String   @map("folder_dir")
   signal1   Json[]   @map("signal_1")

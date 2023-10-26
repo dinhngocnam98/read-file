@@ -20,7 +20,10 @@ export class ReadFileModule {
     //   join(process.cwd(), './local_txt'),
     //   join(process.cwd(), './local_txt1'),
     // ];
-    const folderPaths = ['D:/DAM CA MAU/DATA','Y:','U:','X:','S:', 'T:'];
+
+    // const folderPaths = ['D:/DAM CA MAU/DATA', 'Y:', 'U:', 'X:', 'S:', 'T:', 'R:', 'W:'];
+        const folderPaths = ['V:/Test'];
+
 
     const promises = [];
     folderPaths.forEach((folderPath) => {
@@ -32,16 +35,15 @@ export class ReadFileModule {
       .catch((error) => console.error(error));
 
     // //Doc lai file loi
-    const intervalInMilliseconds = 5*60*1000;
+    const intervalInMilliseconds = 5 * 60 * 1000;
     setInterval(async () => {
       const promisesErrorDir = [];
       if (errorFolderWatchers.length > 0) {
         errorFolderWatchers.forEach((folderPath) => {
           watcherChokidar(folderPath);
         });
-      }
-      else{
-        console.log('Error Watchers not found!')
+      } else {
+        console.log('Error Watchers not found!');
       }
       if (this.appService.errorDir.length > 0) {
         this.appService.errorDir.forEach((folderPath) => {
@@ -88,7 +90,7 @@ export class ReadFileModule {
 
     watchers.forEach((watcher) => {
       watcher.on('addDir', async (path: string) => {
-        const pathEdit = path.replace(/\\/g, "/").replace(":", ":/");
+        const pathEdit = path.replace(/\\/g, '/').replace(':', ':/');
         await this.appService.readFileContents(pathEdit);
       });
     });

@@ -92,6 +92,16 @@ export class AppService {
         await this.prisma.gc2_reports.create({
           data: data,
         });
+        break
+      case folderPath.includes('W:'):
+        await this.prisma.gc1_reports.create({
+          data: data,
+        });
+        break;
+      case folderPath.includes('R:'):
+        await this.prisma.aas_reports.create({
+          data: data,
+        });
         break;
       case folderPath.includes('S:'):
         await this.prisma.uv1800_reports.create({
@@ -103,6 +113,11 @@ export class AppService {
           data: data,
         });
         break;
+        case folderPath.includes('V:'):
+          await this.prisma.hplc_reports.create({
+            data: data,
+          });
+          break;
       default:
         console.log('Invalid folder for database');
         break;
@@ -120,7 +135,9 @@ export class AppService {
       if (signalSections) {
         return this.parseSignalSections(signalSections);
       } else {
-        throw new Error(`Signal data not found in the provided text. direct: ${filePath}`);
+        throw new Error(
+          `Signal data not found in the provided text. direct: ${filePath}`
+        );
       }
     } catch (error) {
       throw new Error(`Error reading or processing the file: ${error.message}`);

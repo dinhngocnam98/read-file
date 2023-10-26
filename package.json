@@ -49,7 +49,8 @@
     "docker:db": "docker-compose -f docker-compose.db.yml up -d",
     "docker:seed": "docker exec -it nest-api npm run seed",
     "docker": "docker-compose up -d",
-    "docker:build": "docker-compose build"
+    "docker:build": "docker-compose build",
+    "start:pm2": "pm2 start ecosystem.config.js --env production"
   },
   "dependencies": {
     "@apollo/server": "^4.5.0",
