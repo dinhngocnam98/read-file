@@ -44,7 +44,6 @@ export class AppService {
       if (indexErrorDir === -1) {
         this.errorDir.push(dir);
       }
-      console.error(`Error reading directory stats: ${dir}`);
     }
   }
   private async readTXT(folderPath: string, file: string) {

@@ -43,17 +43,18 @@ export class ReadFileModule {
       .catch((error) => console.error(error));
 
     // //Doc lai file loi
-    const intervalInMilliseconds = 5 * 60 * 1000;
+    const intervalInMilliseconds = 10 * 1000;
     setInterval(async () => {
       const promisesErrorDir = [];
+      
       if (errorFolderWatchers.length > 0) {
+        console.log('errorFolderWatchers', errorFolderWatchers);
         errorFolderWatchers.forEach((folderPath) => {
           watcherChokidar(folderPath);
         });
-      } else {
-        console.log('Error Watchers not found!');
       }
       if (this.appService.errorDir.length > 0) {
+        console.log('errorDir', this.appService.errorDir);
         this.appService.errorDir.forEach((folderPath) => {
           const promise = this.appService.readFileContents(folderPath);
           promisesErrorDir.push(promise);
@@ -61,8 +62,6 @@ export class ReadFileModule {
         await Promise.all(promisesErrorDir)
           .then(() => console.log('Error shortcuts had read!'))
           .catch((error) => console.error(error));
-      } else {
-        console.log('Error Dir not found!');
       }
     }, intervalInMilliseconds);
 
@@ -77,8 +76,6 @@ export class ReadFileModule {
       });
 
       watcher.on('error', (error) => {
-        console.log(`Erorr chokidar at folder: ${folderPath}`);
-
         watcher.close();
 
         const errorFolderIndex = errorFolderWatchers.indexOf(folderPath);
