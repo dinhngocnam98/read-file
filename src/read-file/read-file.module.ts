@@ -20,9 +20,7 @@ export class ReadFileModule {
     //   join(process.cwd(), './local_txt'),
     //   join(process.cwd(), './local_txt1'),
     // ];
-    // const folderPaths = ['D:/DAM CA MAU/DATA','Y:','U:','X:','S:', 'T:'];
-    const folderPaths = ['X:'];
-
+    const folderPaths = ['D:/DAM CA MAU/DATA','Y:','U:','X:','S:', 'T:'];
 
     const promises = [];
     folderPaths.forEach((folderPath) => {

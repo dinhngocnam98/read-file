@@ -120,7 +120,7 @@ export class AppService {
       if (signalSections) {
         return this.parseSignalSections(signalSections);
       } else {
-        throw new Error('Signal data not found in the provided text.');
+        throw new Error(`Signal data not found in the provided text. direct: ${filePath}`);
       }
     } catch (error) {
       throw new Error(`Error reading or processing the file: ${error.message}`);
